@@ -84,8 +84,8 @@ module.exports = async ({github, context}) => {
     return;
   }
 
-  if (blacklist.includes(subdomain)) {
-    await closePR(github, owner, repo, prNumber, `@${author} ❌ Subdomain '${subdomain}' tidak diizinkan (Masuk daftar Blacklist).`);
+  if (blacklist.includes(subdomain) || blacklist.includes(author.toLowerCase())) {
+    await closePR(github, owner, repo, prNumber, `@${author} ❌ Akses ditolak! Subdomain '${subdomain}' atau Akun GitHub kamu masuk dalam daftar Blacklist.`);
     return;
   }
 
