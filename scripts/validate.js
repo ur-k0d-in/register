@@ -66,6 +66,11 @@ module.exports = async ({github, context}) => {
     return;
   }
 
+  if (domainData.record.MX || Object.keys(domainData.record).some(k => k.toUpperCase() === 'MX')) {
+    await closePR(github, owner, repo, prNumber, `@${author} ❌ Pendaftaran ditolak. Pengaturan record MX (Email) dinonaktifkan untuk menjaga reputasi domain dari spam/phishing.`);
+    return;
+  }
+
   if (domainData.owner.toLowerCase() !== author.toLowerCase()) {
     await closePR(github, owner, repo, prNumber, `@${author} ❌ Field 'owner' harus sesuai dengan username GitHub kamu (${author}).`);
     return;
