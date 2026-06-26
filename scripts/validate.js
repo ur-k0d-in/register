@@ -66,8 +66,37 @@ module.exports = async ({github, context}) => {
     return;
   }
 
-  if (domainData.record.MX || Object.keys(domainData.record).some(k => k.toUpperCase() === 'MX')) {
-    await closePR(github, owner, repo, prNumber, `@${author} ❌ Pendaftaran ditolak. Pengaturan record MX (Email) dinonaktifkan untuk menjaga reputasi domain dari spam/phishing.`);
+  // Ensure record is a valid Object
+  if (typeof domainData.record !== 'object' || domainData.record === null || Array.isArray(domainData.record)) {
+    await closePR(github, owner, repo, prNumber, `@${author} ❌ Format 'record' tidak valid. Gunakan format object, contoh: 
+\`\`\`json
+"record": {
+  "CNAME": "target.vercel.app",
+  "TXT": ["google-site-verification=xxxxx"]
+}
+\`\`\``);
+    return;
+  }
+
+  const recordKeys = Object.keys(domainData.record).map(k => k.toUpperCase());
+  
+  // Block MX Records to prevent spam/abuse
+  if (recordKeys.includes('MX')) {
+    await closePR(github, owner, repo, prNumber, `@${author} ❌ Pendaftaran ditolak. Pengaturan record MX (Email) dinonaktifkan untuk menjaga reputasi k0d.in dari penyalahgunaan spam/phishing.`);
+    return;
+  }
+
+  // Restrict to safe record types
+  const allowedRecords = ['A', 'AAAA', 'CNAME', 'TXT'];
+  const invalidKeys = recordKeys.filter(k => !allowedRecords.includes(k));
+  if (invalidKeys.length > 0) {
+    await closePR(github, owner, repo, prNumber, `@${author} ❌ Tipe record tidak didukung: **${invalidKeys.join(', ')}**. K0din hanya mengizinkan record A, AAAA, CNAME, dan TXT.`);
+    return;
+  }
+
+  // Prevent DNS conflicts (CNAME cannot coexist with A/AAAA)
+  if (recordKeys.includes('CNAME') && (recordKeys.includes('A') || recordKeys.includes('AAAA'))) {
+    await closePR(github, owner, repo, prNumber, `@${author} ❌ DNS Conflict: Record CNAME tidak boleh digabungkan dengan record A atau AAAA pada subdomain yang sama sesuai standar RFC DNS.`);
     return;
   }
 
