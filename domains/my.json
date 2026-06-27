@@ -1,0 +1,7 @@
+{
+  "domain": "my",
+  "owner": "ur-k0din",
+  "record": {
+    "CNAME": "kodin-blog.pages.dev"
+  }
+}
