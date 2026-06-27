@@ -119,7 +119,9 @@ module.exports = async ({github, context}) => {
   let riskScore = 0;
   let flags = [];
 
-  if (rawSubdomain.length < 3) {
+  const isOwner = (prAuthor === 'ur-k0d-in' || prAuthor === 'ur-k0din');
+
+  if (rawSubdomain.length < 3 && !isOwner) {
     await closePR(github, owner, repo, prNumber, `@${author} ❌ Nama subdomain minimal 3 karakter.`);
     return;
   }
