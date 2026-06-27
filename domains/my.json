@@ -1,0 +1,10 @@
+{
+  "domain": "my",
+  "owner": {
+    "repo": "https://github.com/ur-k0din/register",
+    "email": "ur-k0din@users.noreply.github.com"
+  },
+  "record": {
+    "CNAME": "kodin-blog.pages.dev"
+  }
+}
