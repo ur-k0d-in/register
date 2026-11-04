@@ -1,0 +1,10 @@
+{
+  "domain": "share",
+  "owner": "kangtroll602-dot",
+  "record": {
+    "A": "185.158.133.1",
+    "TXT": [
+      "lovable_verify=0310b932501f5ec578b304253f8676fd64dc4e1d2d6752538c99b56b4a10dbe0"
+    ]
+  }
+}
